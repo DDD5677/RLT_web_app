@@ -160,8 +160,13 @@ export const useInventarStore = defineStore("inventar", () => {
          if (box.id === boxId) {
             const exist = box.items.find((item) => item.id === itemId);
             if (exist) {
-               exist.amount =
-                  exist.amount - +quantity >= 0 ? exist.amount - +quantity : 0;
+               if (exist.amount - +quantity > 0) {
+                  exist.amount -= +quantity;
+               } else {
+                  box.items = box.items.filter(
+                     (item: ItemType) => item.id !== itemId
+                  );
+               }
             }
          }
          return box;

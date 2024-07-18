@@ -23,6 +23,7 @@ const dragEnd = (e: any) => {
 const dragStart = (e: any) => {
 	e.target.classList.add('isDragging')
 	e.dataTransfer.setData('item', JSON.stringify(props.item))
+	e.dataTransfer.dropEffect = 'grabbing';
 }
 </script>
 
@@ -37,7 +38,9 @@ const dragStart = (e: any) => {
 	transition: all 0.2s ease-in;
 	position: relative;
 
-
+	&:active {
+		cursor: url("@/assets/image/cursor-hold.svg"), grabbing;
+	}
 
 	&.isDragging {
 		opacity: 0.5;

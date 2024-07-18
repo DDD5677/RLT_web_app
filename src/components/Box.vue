@@ -24,6 +24,7 @@ const drop = (e: any) => {
 	border-right: 1px solid #4D4D4D;
 	border-bottom: 1px solid #4D4D4D;
 
+
 	&:nth-child(1) {
 		border-top-left-radius: 12px;
 	}

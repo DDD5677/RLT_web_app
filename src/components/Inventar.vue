@@ -1,7 +1,9 @@
 <template>
 	<div class="inventar" @drop.prevent>
 		<Box v-for="box in  inventarStore.Boxes " :key="box.id" :box="box" @open="openHandler" />
-		<ItemDetail v-if="isOpen" @close="closeHandler" :item="item" :boxId="boxId" />
+		<Transition name="scale" appear>
+			<ItemDetail v-show="isOpen" @close="closeHandler" :item="item" :boxId="boxId" />
+		</Transition>
 	</div>
 </template>
 
@@ -41,5 +43,23 @@ const closeHandler = () => {
 	cursor: url("@/assets/image/cursor-pointer.svg"), auto;
 
 
+	scale-enter-active {
+		animation: scale-in 0.5s;
+	}
+
+	.scale-leave-active {
+		animation: scale-in 0.5s reverse;
+	}
+
+	@keyframes scale-in {
+		0% {
+			transform-origin: right;
+			transform: scale(0);
+		}
+
+		100% {
+			transform: scale(1);
+		}
+	}
 }
 </style>

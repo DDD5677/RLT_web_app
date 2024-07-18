@@ -12,44 +12,41 @@
 			<span class="text text_5"></span>
 		</div>
 		<div v-if="confirmOpen" class="confirm-block">
-		<input type="text" placeholder="Введите количество" :value="count" @keydown="validateCount">
-		<div class="btns">
-			<button class="reject-btn" @click.prevent="reject">Отмена</button>
-			<button class="accept-btn" @click.prevent="accept">Подтвердить</button>
+			<input type="text" placeholder="Введите количество" @input="validateCount">
+			<div class="btns">
+				<button class="reject-btn" @click.prevent="reject">Отмена</button>
+				<button class="accept-btn" @click.prevent="accept">Подтвердить</button>
+			</div>
 		</div>
-		</div>
-		<button class="btn" @click.prevent="()=>confirmOpen=true">Удалить предмет</button>
-		<span class="close-btn" @click="$emit('close')"></span>
+		<button class="btn" @click.prevent="() => confirmOpen = true">Удалить предмет</button>
+		<span class="close-btn" @click="emit('close')"></span>
 	</div>
 </template>
 
 <script setup lang="ts">
-import {ref } from 'vue'
+import { ref } from 'vue'
 import type { ItemType } from '@/types'
-import {getImageUrl} from '@/helpers/getImage';
-import {useInventarStore} from '@/stores/inventarStore'
+import { getImageUrl } from '@/helpers/getImage';
+import { useInventarStore } from '@/stores/inventarStore'
 const inventarStore = useInventarStore()
-const props = defineProps<{item:ItemType|null,boxId:string}>()
+const emit = defineEmits(['close'])
+const props = defineProps<{ item: ItemType | null, boxId: string }>()
 const count = ref('')
-const confirmOpen=ref(false)
-const validateCount = (e:any)=>{
-	if(e.key.length>2)return
-	if((/^([\d]*)$/).test(e?.key)){
-		console.log(e);
-		count.value=e?.target?.value
-	}else{
-		e.preventDefault()
-	}
+const confirmOpen = ref(false)
+const validateCount = (e: any) => {
+	count.value = e.target.value.replace(/[^0-9]/g, '')
+	e.target.value = count.value
+	console.log(count.value);
 }
 
-const reject=()=>{
-	confirmOpen.value=false
+const reject = () => {
+	confirmOpen.value = false
 }
 
-const accept = ()=>{
-	if(!props.item)return
-	inventarStore.deleteItem(props.item.id ,props.boxId, count.value)
-	confirmOpen.value=false
+const accept = () => {
+	if (!props.item) return
+	inventarStore.deleteItem(props.item.id, props.boxId, count.value)
+	emit('close')
 }
 </script>
 
@@ -141,52 +138,59 @@ const accept = ()=>{
 		color: #fff;
 		border: none;
 		background-color: rgba(255, 136, 136, 1);
-		cursor: url("@/assets/image/cursor.svg") auto;
+		cursor: url("@/assets/image/cursor.svg"), pointer;
 	}
-	.confirm-block{
+
+	.confirm-block {
 		padding: 20px;
 		width: 100%;
 		position: absolute;
-		bottom:0;
+		bottom: 0;
 		right: 0;
 		background-color: #262626;
 		border-top: 1px solid #4D4D4D;
 		border-bottom-right-radius: 12px;
-		input{
-			padding:11px 12px;
+
+		input {
+			padding: 11px 12px;
 			margin-bottom: 20px;
-			width:100%;
-			background-color:#262626;
-			outline:none;
+			width: 100%;
+			background-color: #262626;
+			outline: none;
 			font-size: 14px;
 			border: 1px solid #4D4D4D;
 			border-radius: 4px;
-			color:#fff;
-			&::placeholder{
+			color: #fff;
+
+			&::placeholder {
 				font-family: "Inter", sans-serif;
-   			font-weight: 500;
+				font-weight: 500;
 			}
 		}
-		.btns{
+
+		.btns {
 			display: flex;
-			justify-content:space-between;
-			button{
-				padding:8px 15px;
+			justify-content: space-between;
+
+			button {
+				padding: 8px 15px;
 				font-family: "Inter", sans-serif;
-   			font-weight: 400;
+				font-weight: 400;
 				font-size: 14px;
-				line-height:16px;
+				line-height: 16px;
 				outline: none;
 				border-radius: 8px;
 				border: none;
 				cursor: pointer;
-				&.accept-btn{
-					background-color:#FA7272;
-					color:#fff;
+
+				&.accept-btn {
+					background-color: #FA7272;
+					color: #fff;
 				}
 			}
 		}
 	}
+
 	.close-btn {
 		display: inline-block;
 		position: absolute;
